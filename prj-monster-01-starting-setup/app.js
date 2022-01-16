@@ -1,12 +1,54 @@
+function getRandomValue(min, max) {
+    return Math.floor(Math.random() * (max-min)) + min;
+};
+
 const app = Vue.createApp({
     data() {
         return {
             playerHealth: 100,
-            monsterHealth: 100
+            monsterHealth: 100,
+            currentRounds: 0,
         };
     },
+    computed: {
+        monsterBarStyles(){
+            return { width: monsterHealth + '%'};
+        },
+        playerBarStyles(){
+            return { width: playerHealth + '%'};
+        },
+        mayUseSpecial(){
+            return this.currentRounds % 3 !== 0 ;
+        },
+    },
     methods: {
-
+        attackMonster(){
+            this.currentRounds++;
+            const attackValue = getRandomValue(5,12);
+            this.monsterHealth -= attackValue;
+            this.attackPlayer();
+        },
+        attackPlayer(){
+            const attackValue = getRandomValue(7,15);
+            this.playerHealth -= attackValue;
+        },
+        specialAttackMonster(){
+            this.currentRounds++;
+            const attackValue = getRandomValue(10,25);
+            this.monsterHealth -= attackValue;
+            this.attackPlayer();
+        },
+        healPlayer(){
+            this.currentRounds++;
+            const healValue = getRandomValue(8,20);
+            if (this.playerHealth + healValue > 100){
+                this.playerHealth = 100;
+            }
+            else{
+                this.playerHealth += healValue;
+            }
+        }
     }
+        
 });
 app.mount('game');
